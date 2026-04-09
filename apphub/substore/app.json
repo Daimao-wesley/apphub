@@ -1,0 +1,113 @@
+{
+    "appid": -1,
+    "appname": "substore",
+    "apptitle": "Sub-Store",
+    "apptype": "Tools",
+    "appTypeCN": "实用工具",
+    "appversion": [
+        {
+            "m_version": "latest",
+            "s_version": []
+        }
+    ],
+    "appdesc": "高级订阅管理器，支持多平台订阅转换、合并和分发",
+    "appstatus": 1,
+    "home": "https://github.com/sub-store-org/Sub-Store",
+    "help": "https://xream.notion.site/Sub-Store-Docker-8efc1aea40fa431b9a562b78994e7fb8",
+    "updateat": 1775673600,
+    "depend": null,
+    "field": [
+        {
+            "attr": "domain",
+            "name": "域名",
+            "type": "textarea",
+            "default": "",
+            "suffix": "浏览器访问域名，可不填",
+            "unit": ""
+        },
+        {
+            "attr": "allow_access",
+            "name": "允许外部访问",
+            "type": "checkbox",
+            "default": true,
+            "suffix": "允许通过主机IP+端口访问",
+            "unit": ""
+        },
+        {
+            "attr": "substore_api_port",
+            "name": "Sub-Store 访问端口",
+            "type": "number",
+            "default": 3001,
+            "suffix": "Sub-Store Web/API 访问端口",
+            "unit": ""
+        },
+        {
+            "attr": "substore_backend_path",
+            "name": "前后端通信路径",
+            "type": "string",
+            "default": "/change_this_to_random_path",
+            "suffix": "用于前后端通信，建议改成随机长路径",
+            "unit": ""
+        },
+        {
+            "attr": "cpus",
+            "name": "cpu核心数限制",
+            "type": "number",
+            "default": 0,
+            "suffix": "0为不限制",
+            "unit": ""
+        },
+        {
+            "attr": "memory_limit",
+            "name": "内存限制",
+            "type": "number",
+            "default": 0,
+            "suffix": "0为不限制",
+            "unit": ""
+        }
+    ],
+    "env": [
+        {
+            "key": "substore_api_port",
+            "type": "port",
+            "default": null,
+            "desc": "Sub-Store 访问端口"
+        },
+        {
+            "key": "substore_backend_path",
+            "type": "string",
+            "default": null,
+            "desc": "Sub-Store 前后端通信路径"
+        },
+        {
+            "key": "app_path",
+            "type": "path",
+            "default": null,
+            "desc": "应用数据目录"
+        },
+        {
+            "key": "host_ip",
+            "type": "string",
+            "default": null,
+            "desc": "主机IP"
+        },
+        {
+            "key": "cpus",
+            "type": "number",
+            "default": null,
+            "desc": "CPU核心数限制"
+        },
+        {
+            "key": "memory_limit",
+            "type": "number",
+            "default": null,
+            "desc": "内存大小限制"
+        }
+    ],
+    "volumes": {
+        "data": {
+            "type": "path",
+            "desc": "数据目录"
+        }
+    }
+}

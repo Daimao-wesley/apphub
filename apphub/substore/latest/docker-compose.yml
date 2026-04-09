@@ -1,0 +1,28 @@
+services:
+  substore:
+    image: xream/sub-store:http-meta
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: ${CPUS}
+          memory: ${MEMORY_LIMIT}
+    environment:
+      - SUB_STORE_BACKEND_API_HOST=0.0.0.0
+      - SUB_STORE_BACKEND_API_PORT=3001
+      - SUB_STORE_BACKEND_MERGE=true
+      - SUB_STORE_FRONTEND_BACKEND_PATH=${SUBSTORE_BACKEND_PATH}
+      - PORT=9876
+      - HOST=127.0.0.1
+    ports:
+      - ${HOST_IP}:${SUBSTORE_API_PORT}:3001
+    volumes:
+      - ${APP_PATH}/data:/opt/app/data
+    labels:
+      createdBy: "bt_apps"
+    networks:
+      - baota_net
+
+networks:
+  baota_net:
+    external: true
