@@ -91,7 +91,7 @@ Write-Output "app.json OK"
 文件：`apphub/substore/latest/docker-compose.yml`
 
 本次模板采用：
-1. 镜像：`xream/sub-store`
+1. 镜像：`xream/sub-store:latest`（**显式加 tag**，详见 §8）
 2. 资源限制：`CPUS` / `MEMORY_LIMIT`
 3. 环境变量：
    - `SUB_STORE_BACKEND_API_HOST=0.0.0.0`
@@ -126,7 +126,7 @@ APP_PATH=
 
 原因：
 1. 宝塔安装时会先读取 `.env` 并做变量替换。
-2. 缺失 `.env` 时，面板可能报“docker-compose.yml 不存在”的误导性错误。
+2. 缺失 `.env` 时，面板可能报"docker-compose.yml 不存在"的误导性错误。
 
 ### 步骤 6：准备图标
 
@@ -252,7 +252,7 @@ https://example.com?api=https://example.com/LonelyWesley
 ### 6.2 镜像更新（xream/sub-store）
 
 流程：
-1. 在宝塔应用中执行“更新镜像/重建容器”（不同版本按钮名略有差异）。
+1. 在宝塔应用中执行"更新镜像/重建容器"（不同版本按钮名略有差异）。
 2. 本质是 `docker pull` + 重建。
 
 说明：
@@ -267,3 +267,101 @@ https://example.com?api=https://example.com/LonelyWesley
    - `app.json` 可解析
    - `latest` 下 `docker-compose.yml` 与 `.env` 同时存在
    - `.env` 与 `app.json env` 键名一致
+
+## 8. 对齐官方风格的后续优化（2026-04-22 回头补的）
+
+Sub-Store 首版"能用"之后，对照 `aaPanel/apphub` 仓库里官方维护的 `alist` / `deeplx` 两个示例，发现 4 处**不影响功能、但不统一**的细节。这里记录下来作为以后做任何新应用的参考。
+
+### 8.1 改动清单
+
+| 文件 | 字段 | 修改前 | 修改后 |
+|---|---|---|---|
+| `app.json` | `domain.suffix` | `浏览器访问域名，可不填`（全角逗号 + "的"字不同） | `浏览器访问的域名,非必填` |
+| `app.json` | `allow_access.suffix` | `允许通过主机IP+端口访问` | `允许直接通过主机IP+端口访问，如果您设置了域名请不要勾选这里` |
+| `app.json` | `cpus.suffix` | `0为不限制` | `0为不限制,最大可用核心数为: ` |
+| `app.json` | `memory_limit.suffix` | `0为不限制` | `0为不限制,最大可用内存为: ` |
+| `docker-compose.yml` | `image` | `xream/sub-store` | `xream/sub-store:latest` |
+
+### 8.2 每一条为什么重要
+
+#### 8.2.1 `cpus` / `memory_limit.suffix` 尾部的"冒号+空格"
+
+```json
+"suffix": "0为不限制,最大可用核心数为: "
+```
+
+**末尾两个字符（冒号 `:` + 一个空格）**是面板前端的拼接锚点。面板会把主机实际容量拼到后面，显示成：
+
+```text
+0为不限制,最大可用核心数为: 8
+```
+
+缺这两个字符的话，显示会变成 `0为不限制8`，看起来像 bug。这是最容易忽略的细节。
+
+#### 8.2.2 `allow_access.suffix` 补充域名提示
+
+原版只说"允许通过主机IP+端口访问"，用户看不出"配了域名 + 勾选这里"会带来什么问题。
+
+官方文案"如果您设置了域名请不要勾选这里"直接提醒用户：反代场景下勾选这个 = 公网口暴露 = **绕过 Nginx 的 WAF/日志/SSL**。这是一个安全提示，不是废话。
+
+#### 8.2.3 `domain.suffix` 半角逗号 + "非必填"
+
+```text
+浏览器访问的域名,非必填     ← 官方
+浏览器访问域名，可不填       ← 自己第一版
+```
+
+两处差异：
+1. **半角逗号** vs 全角逗号（官方统一半角）
+2. **"非必填"** vs "可不填"（官方更正式）
+
+纯字面差异，但统一后 UI 视觉更整齐。
+
+#### 8.2.4 `image` 加 `:latest` 显式 tag
+
+```yaml
+image: xream/sub-store            # 隐式 latest，但不显式
+image: xream/sub-store:latest     # 显式，推荐
+```
+
+好处：
+1. **意图明确**：告诉读代码的人"这就是 latest 分支"，不是忘了写
+2. **未来做多版本时的基线**：将来新增 `apphub/substore/2.x/docker-compose.yml`，能直接对比 `:2.x` vs `:latest`，结构一致
+3. 官方 alist 示例的 compose 就是显式 tag
+
+### 8.3 修改流程（作为"如何修正已上架的应用"示例）
+
+```powershell
+# 1. 修改文件（手动编辑 app.json、compose）
+
+# 2. 可选：更新 updateat 时间戳
+$ts = [int](Get-Date -UFormat %s)
+# 手动把 app.json 里 updateat 改成这个值
+
+# 3. 校验 JSON
+Get-Content apphub/substore/app.json | ConvertFrom-Json | Out-Null
+Write-Output "app.json OK"
+
+# 4. 提交
+git add apphub/substore
+git commit -m "refactor: polish substore app.json to align with official style"
+git push origin main
+```
+
+### 8.4 已安装实例不会自动吃到这次改动
+
+**重要提醒**：只是 `suffix` / `image tag` 这种**元数据级**修改，对已部署的实例没任何影响（suffix 只在安装表单展示，image tag 只在下次 `docker pull` 时生效）。
+
+所以这次优化不需要通知现有用户做任何动作——纯粹是让下次新装时体验更好。
+
+### 8.5 本次优化总结（经验外推）
+
+**原则**：**即使应用"能跑"，也要去翻官方示例对照文案和细节**。
+
+apphub 作为面板的二级界面，用户看到的每一行文案都会影响"这个仓库是不是可靠"的第一印象。一点点文案不统一都会破坏这种信任。
+
+## 9. 延伸阅读
+
+1. `docs/sillytavern-apphub-完整上架说明.md` —— SillyTavern 完整复盘（含 Forbidden/白名单踩坑）
+2. `docs/宝塔apphub完整配置参考.md` —— 全字段超集参考（覆盖本文没用到的配置）
+3. `docs/新应用脚手架清单.md` —— 新增应用时的逐项勾选清单
