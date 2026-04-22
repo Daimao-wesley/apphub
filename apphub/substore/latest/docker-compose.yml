@@ -1,6 +1,6 @@
 services:
   substore:
-    image: xream/sub-store
+    image: xream/sub-store:latest
     restart: always
     deploy:
       resources:

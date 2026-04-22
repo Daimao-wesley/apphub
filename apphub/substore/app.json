@@ -22,7 +22,7 @@
             "name": "域名",
             "type": "textarea",
             "default": "",
-            "suffix": "浏览器访问域名，可不填",
+            "suffix": "浏览器访问的域名,非必填",
             "unit": ""
         },
         {
@@ -30,7 +30,7 @@
             "name": "允许外部访问",
             "type": "checkbox",
             "default": true,
-            "suffix": "允许通过主机IP+端口访问",
+            "suffix": "允许直接通过主机IP+端口访问，如果您设置了域名请不要勾选这里",
             "unit": ""
         },
         {
@@ -54,7 +54,7 @@
             "name": "cpu核心数限制",
             "type": "number",
             "default": 0,
-            "suffix": "0为不限制",
+            "suffix": "0为不限制,最大可用核心数为: ",
             "unit": ""
         },
         {
@@ -62,7 +62,7 @@
             "name": "内存限制",
             "type": "number",
             "default": 0,
-            "suffix": "0为不限制",
+            "suffix": "0为不限制,最大可用内存为: ",
             "unit": ""
         }
     ],
