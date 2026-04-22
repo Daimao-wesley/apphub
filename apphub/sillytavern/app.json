@@ -14,7 +14,7 @@
     "appstatus": 1,
     "home": "https://github.com/SillyTavern/SillyTavern",
     "help": "https://docs.sillytavern.app/",
-    "updateat": 1776000000,
+    "updateat": 1776816000,
     "depend": null,
     "field": [
         {
@@ -50,6 +50,46 @@
             "unit": "s"
         },
         {
+            "attr": "sillytavern_whitelist_mode",
+            "name": "IP白名单模式",
+            "type": "string",
+            "default": "false",
+            "suffix": "true=仅允许127.0.0.1访问; 通过域名或外部访问请填 false",
+            "unit": ""
+        },
+        {
+            "attr": "sillytavern_basicauth_mode",
+            "name": "启用基础认证",
+            "type": "string",
+            "default": "true",
+            "suffix": "true=开启HTTP基础认证(默认); false=关闭",
+            "unit": ""
+        },
+        {
+            "attr": "sillytavern_basicauth_user",
+            "name": "基础认证-用户名",
+            "type": "string",
+            "default": "admin",
+            "suffix": "HTTP基础认证用户名,启用基础认证时生效",
+            "unit": ""
+        },
+        {
+            "attr": "sillytavern_basicauth_password",
+            "name": "基础认证-密码",
+            "type": "string",
+            "default": "please_change_me",
+            "suffix": "HTTP基础认证密码,强烈建议修改为强密码",
+            "unit": ""
+        },
+        {
+            "attr": "sillytavern_enable_user_accounts",
+            "name": "启用用户账号系统",
+            "type": "string",
+            "default": "false",
+            "suffix": "true=启用SillyTavern账号系统(1.12+推荐),首次访问将引导注册;可与基础认证叠加",
+            "unit": ""
+        },
+        {
             "attr": "cpus",
             "name": "cpu核心数限制",
             "type": "number",
@@ -78,6 +118,36 @@
             "type": "number",
             "default": null,
             "desc": "SillyTavern 心跳间隔"
+        },
+        {
+            "key": "sillytavern_whitelist_mode",
+            "type": "string",
+            "default": null,
+            "desc": "IP白名单模式"
+        },
+        {
+            "key": "sillytavern_basicauth_mode",
+            "type": "string",
+            "default": null,
+            "desc": "启用HTTP基础认证"
+        },
+        {
+            "key": "sillytavern_basicauth_user",
+            "type": "string",
+            "default": null,
+            "desc": "基础认证用户名"
+        },
+        {
+            "key": "sillytavern_basicauth_password",
+            "type": "string",
+            "default": null,
+            "desc": "基础认证密码"
+        },
+        {
+            "key": "sillytavern_enable_user_accounts",
+            "type": "string",
+            "default": null,
+            "desc": "启用SillyTavern用户账号系统"
         },
         {
             "key": "app_path",
